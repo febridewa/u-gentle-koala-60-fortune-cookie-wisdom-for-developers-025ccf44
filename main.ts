@@ -10,6 +10,12 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const LINE =
   "The code you delete today is the clearest code you will ever write.";
 
+// The gate only accepts 1–120 characters of non-whitespace UTF-8 text in a
+// single line, so fail loudly instead of shipping an invalid entry.
+if (LINE.length < 1 || LINE.length > 120 || LINE.trim() !== LINE || LINE.includes("\n")) {
+  throw new Error(`Entry line is invalid (${LINE.length} chars): ${JSON.stringify(LINE)}`);
+}
+
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", LINE, "utf8");
 console.log(`Wrote ${LINE.length} chars to /output/entry.txt`);
